@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>JS Bin</title>
+</head>
+<script src="https://code.jquery.com/jquery.min.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<div class="container my-5">
+    <h2 class="text-center">Revenue-based Loan Calculator</h2>
+    <form id="loanCalculatorForm">
+        <div class="form-group">
+            <label for="loanAmount">Loan Amount</label>
+            <input type="number" class="form-control" id="loanAmount" placeholder="Enter loan amount">
+        </div>
+        <div class="form-group">
+            <label for="currentRevenue">Current Monthly Revenue</label>
+            <input type="number" class="form-control" id="currentRevenue" placeholder="Enter current monthly revenue">
+        </div>
+        <div class="form-group">
+            <label for="growthRate">Expected Growth Rate</label>
+            <input type="number" class="form-control" id="growthRate" placeholder="Enter expected growth rate">
+        </div>
+        <div class="form-group">
+            <label for="termLength">Term Length</label>
+            <select class="form-control" id="termLength">
+                <option value="12">12 Months</option>
+                <option value="24">24 Months</option>
+                <option value="36">36 Months</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="paybackMultiple">Payback Multiple</label>
+            <input type="number" class="form-control" id="paybackMultiple" placeholder="Enter payback multiple">
+        </div>
+        <button type="button" class="btn btn-primary" id="calculateBtn">Calculate</button>
+    </form>
+    <div id="results" class="mt-5"></div>
+</div>
+<body>
+
+<script>
+    document.getElementById('calculateBtn').addEventListener('click', function() {
+        // Get input values
+        const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+        const currentRevenue = parseFloat(document.getElementById('currentRevenue').value);
+        const growthRate = parseFloat(document.getElementById('growthRate').value / 100); // Converting to decimal
+        const termLength = parseInt(document.getElementById('termLength').value);
+        const paybackMultiple = parseFloat(document.getElementById('paybackMultiple').value);
+
+        // Perform calculations
+        const totalRepayment = loanAmount * paybackMultiple;
+        let targetRevenue = 0;
+        let monthlyRevenue = currentRevenue;
+
+        for (let i = 0; i < termLength; i++) {
+            targetRevenue += monthlyRevenue;
+            monthlyRevenue = monthlyRevenue + (monthlyRevenue * growthRate);
+        }
+
+        const revenueSharePercentage = (totalRepayment / targetRevenue) * 100;
+
+        // Display results
+        document.getElementById('results').innerHTML = `
+        <p><strong>Total Repayment:</strong> ${totalRepayment.toFixed(2)}</p>
+        <p><strong>Target Revenue:</strong> ${targetRevenue.toFixed(2)}</p>
+        <p><strong>Revenue Share Percentage:</strong> ${revenueSharePercentage.toFixed(2)}%</p>
+    `;
+    });
+
+</script>
+
+</body>
+</html>
